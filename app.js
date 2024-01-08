@@ -27,6 +27,9 @@ app.get("/assignments/:assignmentsId", (req, res) => {
   let assignmentData = dataAssignments.filter(
     (item) => item.id === assignmentsId
   );
+  if (assignmentData.length === 0) {
+    return res.status(404).json({ error: "Assignment not found" });
+  }
   return res.json({
     data: assignmentData[0],
   });
@@ -79,21 +82,22 @@ app.put("/assignments/:assignmentsId", (req, res) => {
 });
 
 app.get("/assignments/:assignmentsId/comments", (req, res) => {
-  let assignmentsId = Number(req.params.assignmentsId);
+  let addAssignmentsId = Number(req.params.assignmentsId);
   let getComment = dataComments.filter(
-    (item) => item.assignmentId === assignmentsId
+    (item) => item.assignmentId === addAssignmentsId
   );
   return res.json({
     message: "Complete fetching comments",
     data: getComment,
+    
   });
 });
 
 app.post("/assignments/:assignmentsId/comments", (req, res) => {
-  let assignmentsId = Number(req.params.assignmentsId);
+  let assignmentId = Number(req.params.assignmentsId);
   dataComments.push({
     id: dataComments[dataComments.length - 1].id + 1,
-    assignmentsId,
+    assignmentId,
     ...req.body,
   });
   return res.json({
