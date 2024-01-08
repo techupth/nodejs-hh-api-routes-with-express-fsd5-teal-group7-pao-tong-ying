@@ -8,6 +8,7 @@ let mockUpComments = comments;
 
 const app = express(); // app เก็บผลลัพธ์จากการ execute express()
 const port = 4000;
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -24,7 +25,7 @@ app.get("/assignments",(req,res)=>{
       }
 
     const result = mockUpAssignments.slice(0, limit);
-
+    console.log(result)
     return res.json({
         message: "Complete Fetching assignments",
         data: {...result},
@@ -50,14 +51,24 @@ app.get("/assignments",(req,res)=>{
 //    }
 //localhost:4000/assignments
   app.post('/assignments', function (req, res) {
-    mockUpAssignments.push({
-      id: mockUpAssignments[mockUpAssignments.length - 1].id + 1, // mockUpAssignments[mockUpAssignments.length - 1] คือเข้าไปที่ index ตัวสุดท้ายของ mockUpAssignments
-      ...req.body
-    });
-  
+    
+    // const newAss = mockUpAssignments.push({
+    //   id: mockUpAssignments[mockUpAssignments.length - 1].id + 1, // mockUpAssignments[mockUpAssignments.length - 1] คือเข้าไปที่ index ตัวสุดท้ายของ mockUpAssignments
+    //   ...req.body
+    // })
+
+    const newAss = ({
+        id: mockUpAssignments[mockUpAssignments.length - 1].id + 1, // mockUpAssignments[mockUpAssignments.length - 1] คือเข้าไปที่ index ตัวสุดท้ายของ mockUpAssignments
+        ...req.body
+      })
+    mockUpAssignments.push(newAss);
+
+    console.log(newAss)
     return res.json({
         message: "New assignment has been created successfully",
-        data: {...mockUpAssignments},
+        data: newAss,
+        // data: mockUpAssignments[mockUpAssignments.length-1],
+        // afterPost: {...mockUpAssignments},
       })
   });
 
@@ -80,8 +91,8 @@ app.get("/assignments",(req,res)=>{
   mockUpAssignments = newBlogPosts;
 
 	return res.json({
-        message: "Assignment Id : <assignmentsId>  has been deleted successfully",
-        afterDel:{...mockUpAssignments}
+        message: `Assignment Id : ${postIdFromClient}  has been deleted successfully`,
+        // afterDel:{...mockUpAssignments}
       })
 });
 
@@ -97,6 +108,7 @@ app.put('/assignments/:assignmentsId', function (req, res) {
            })
     }
 
+    //หาก้อน obj ที่มีไอดีตรงกับที่รับเข้ามา โดยจะ return กลับออกมาเป็น เลข index ที่เก็บข้อมูลนั้น
 	const blogPostIndex = mockUpAssignments.findIndex((item) => {
 	  return item.id === postIdFromClient;
   })
@@ -104,8 +116,9 @@ app.put('/assignments/:assignmentsId', function (req, res) {
   mockUpAssignments[blogPostIndex] = { id: postIdFromClient, ...req.body }
   console.log(mockUpAssignments[blogPostIndex])
 	return res.json({
-        message: "Assignment Id : <assignmentsId>  has been updated successfully",
-        data: {...mockUpAssignments},
+        message: `Assignment Id : ${postIdFromClient}  has been updated successfully`,
+        data: mockUpAssignments[blogPostIndex],
+        // afterPut: {...mockUpAssignments},
       })
 });
 
@@ -113,3 +126,18 @@ app.listen(port, () => {
     console.log(`Server is running ai ${port}`);
   });
 
+
+
+  /*
+const asd = [
+  {id:1,abc:2},
+  {id:3,abc:4},
+  {id:5,abc:6},
+]
+
+const yy = asd.push({id:7,abc:8});
+
+console.log(asd)
+console.log(yy)
+//yy contains the new length of the array, which is 4 in this case.
+  */
